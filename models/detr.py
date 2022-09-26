@@ -17,6 +17,8 @@ from .segmentation import (DETRsegm, PostProcessPanoptic, PostProcessSegm,
                            dice_loss, sigmoid_focal_loss)
 from .transformer import build_transformer
 
+from .fastdetr import FastDETR
+
 
 class DETR(nn.Module):
     """ This is the DETR module that performs object detection """
@@ -321,13 +323,14 @@ def build(args):
 
     transformer = build_transformer(args)
 
-    model = DETR(
-        backbone,
-        transformer,
-        num_classes=num_classes,
-        num_queries=args.num_queries,
-        aux_loss=args.aux_loss,
-    )
+    # model = DETR(
+    #     backbone,
+    #     transformer,
+    #     num_classes=num_classes,
+    #     num_queries=args.num_queries,
+    #     aux_loss=args.aux_loss,
+    # )
+    model = FastDETR(args)
     if args.masks:
         model = DETRsegm(model, freeze_detr=(args.frozen_weights is not None))
     matcher = build_matcher(args)
